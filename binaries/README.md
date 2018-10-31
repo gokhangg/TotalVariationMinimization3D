@@ -1,0 +1,2 @@
+The image in this directory is supplemented to show a typical result of the algorithm.
+The image contains two panels; the left one is noisy image and the rigth one is the denoised one that denoised by the algorithm.
