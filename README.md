@@ -1,8 +1,8 @@
 The source codes are provided for applications of 3D and 2D total variation (TV) minimizations which are widely used for image denoising and restoration. In the application, Chambolle's dual approach [1] for the minimization of the cost function was deployed.
 
-An example application is provided here and based on ITK. The codes are written as an ITK filter so you can also inherit the codes for your specific ITK applications. However, the performance of the codes are not guaranteed, since they have not been optimized for ITK applications and the codes may not comply with some ITK requirements.
+An example application is provided here and based on ITK. The codes are written as an ITK filter so you can also inherit the codes for your specific ITK applications. However, the performance is not guaranteed, since the codes have not been optimized for ITK applications and may not comply with some ITK requirements.
 
-There are two binaries of the example code which are compiled for Windows and Linux and you can directly run them. There is also an image in the same directory on which you can see performance of the executables.
+There are two binaries of the example code which are compiled for Windows and Linux OSs and you can directly run them. There is also an image in the same directory on which you can see performance of the executables.
 
 Parameters of the executables:
 
