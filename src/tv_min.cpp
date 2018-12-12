@@ -18,7 +18,6 @@
 #include "itkImageFileWriter.h"
 
 
-
 #include "./Parser/ArgumentParser.hpp"
 #include <math.h>
 
