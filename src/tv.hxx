@@ -22,7 +22,7 @@ namespace itk
 	{
 		//Allocate
 		uint32 Dim=TInputImage::ImageDimension;
-		float *pP[Dim];
+		float *pP[3];
 		float *pIm;
 		float r = 0.0;
 		typename TInputImage::Pointer InIm = const_cast< TInputImage * >(this->GetInput());
@@ -243,9 +243,9 @@ namespace itk
 		uint32 SzPl;
 		float rat,Lam = Lm + epsilon;
 		typename TOutputImage::Pointer OutIm = this->GetOutput();
-		InPxType *pP[Dim];
+		InPxType *pP[3];
 		InPxType *pIm;
-		InPxType diff[Dim];
+		InPxType diff[3];
 		ImageRegionIterator<TOutputImage> OutIt(OutIm, OutIm->GetRequestedRegion());
 
 		if (ImLoaded)
