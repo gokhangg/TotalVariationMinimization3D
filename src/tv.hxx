@@ -34,13 +34,9 @@ namespace itk
 		else
 		Dm = Dim;
 
-		for (int i = 0; i<Dim; i++)
-		{
-			Sz[i] = InIm->GetBufferedRegion().GetSize()[i];
-		}
-
 		for (int i = 0; i<Dm; i++)
 		{
+			Sz[i] = InIm->GetBufferedRegion().GetSize()[i];
 			TotalVox *= Sz[i] + 2;
 			Sp[i] = InIm->GetSpacing()[i];
 		}
