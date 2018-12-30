@@ -23,69 +23,70 @@ using namespace std;
 namespace itk
 {
 
-	template<typename TInputImage, typename TOutputImage>
-	class TotalVariationMinimization:public ImageToImageFilter< TInputImage, TOutputImage >
-	{
-	public:
-		using Superclass = ImageToImageFilter< TInputImage, TOutputImage >;
-		using Self = TotalVariationMinimization;
-		using Pointer = SmartPointer< Self >;
-		using ConstPointer = SmartPointer< const Self >;
-		typedef unsigned int uint32;
-		typedef float InPxType;
-	private:
-		uint32 Dm = TInputImage::ImageDimension;
-		uint32 TotalVox = 1;
-		uint32 It = 2;
-		uint32 Sz[3];
-		float Sp[3];
-		float Sc[3];
-		float To = 0.2f;
-		float Lm = 0.0f;
-		bool Allocated=false;
-		bool ImLoaded=false;
-		bool SliceBySlice = true;
-		bool IsIsotropic = false;
-		bool Verbose=false;
-		InPxType *P[3];
-		InPxType *Im;
-		void TVmin2D();
-		void Engine3D();
-		void EngineSliceBySlice();
-	public:
-		itkNewMacro(Self);
-		itkTypeMacro(DiscreteGaussianImageFilter, ImageToImageFilter);
-		void Load2D();
-		void Load3D();
-		void SetTo(float T)
-		{
-			To = T;
-		}
-		void SetIt(uint32 I)
-		{
-			It = I;
-		}
-		void SetLambda(float Lam)
-		{
-			Lm = Lam;
-		}
-		void SlcBySlc(bool Slc)
-		{
-			SliceBySlice = Slc;
-		}
-
-		void SetVerbose(bool Verb)
-		{
-			this->Verbose=Verb;
-		}
-		void PrintSelf(std::ostream & os, Indent indent) const override;
-	protected:
-		TotalVariationMinimization()
-		{
-		}
-		~TotalVariationMinimization();
-		void GenerateData() override;
-	};
+template<typename TInputImage, typename TOutputImage>
+class TotalVariationMinimization: public ImageToImageFilter<TInputImage,TOutputImage>
+{
+public:
+    using Superclass = ImageToImageFilter< TInputImage, TOutputImage >;
+    using Self = TotalVariationMinimization;
+    using Pointer = SmartPointer< Self >;
+    using ConstPointer = SmartPointer< const Self >;
+    typedef unsigned int uint32;
+private:
+    uint32 Dm = TInputImage::ImageDimension;
+    uint32 TotalVox = 1;
+    uint32 It = 5;
+    uint32 Sz[TInputImage::ImageDimension];
+    float *Im;
+    float Sp[TInputImage::ImageDimension];
+    float Sc[TInputImage::ImageDimension];
+    float *P[TInputImage::ImageDimension];
+    float To = 0.2f;
+    float Lm = 0.0f;
+    bool Allocated = false;
+    bool SliceBySlice = true;
+    bool IsIsotropic = false;
+    bool Verbose = false;
+    void TVmin2D(void);
+    void Engine3D(void);
+    void EngineSliceBySlice(void);
+public:
+    itkNewMacro (Self);itkTypeMacro(DiscreteGaussianImageFilter, ImageToImageFilter);
+    void Load3D(void);
+    void SetTo(float T)
+    {
+        To = T;
+    }
+    void SetIt(uint32 I)
+    {
+        It = I;
+    }
+    void SetLambda(float Lam)
+    {
+        Lm = Lam;
+    }
+    void SlcBySlc(bool Slc)
+    {
+        SliceBySlice = Slc;
+    }
+    void Isotropic(bool iso)
+    {
+        IsIsotropic = iso;
+    }
+    void SetVerbose(bool Verb)
+    {
+        this->Verbose = Verb;
+    }
+    void
+    PrintSelf(std::ostream & os, Indent indent) const override;
+protected:
+    TotalVariationMinimization()
+    {
+    }
+    ~TotalVariationMinimization();
+    void
+    GenerateData() override;
+};
 
 }
 
