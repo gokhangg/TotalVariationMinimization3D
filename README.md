@@ -7,10 +7,17 @@ There are two binaries of the example code which are compiled for Windows and Li
 Parameters of the executables:
 
 -in: input image
+
 -out: output image to be written
+
 -l: lambda (regularization weight) of the TV cost function
+
 -it: number of iterations in the optimization
+
 -slc: if the argument is "true" a 3D image is processed slice by slice (2D-wise), otherwise it will be processed as a whole 3D image.
+
+-iso: if the argument is "true" a input image is processed in an isotropic fashion, otherwise slice thickness will be used to get weights of directional derivatives in the nabla operators.
+
 
 
 [1] Chambolle, A. Journal of Mathematical Imaging and Vision (2004) 20: 89. https://doi.org/10.1023/B:JMIV.0000011325.36760.1e"# TotalVariationMinimization3D" 
