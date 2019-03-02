@@ -39,14 +39,16 @@ int main(int argc, char * argv[])
     try
     {
         lambda = stof(parser["lambda"]);
-    } catch (const std::invalid_argument& ia)
+    } 
+    catch (const std::invalid_argument& ia)
     {
         std::cout << "Invalid lambda value 0 is assigned instead\n";
     }
     try
     {
         It = stof(parser["iter"]);
-    } catch (const std::invalid_argument& ia)
+    } 
+    catch (const std::invalid_argument& ia)
     {
         std::cout << "Invalid iteration value 10 is assigned instead\n";
     }
