@@ -10,12 +10,12 @@
 #include <string>
 #include <stdio.h>
 #include <new>
+#include <math.h>
 
 #include "itkImage.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 
-#include <math.h>
 #include "./Parser/ArgumentParser.hpp"
 #include "tv.h"
 
