@@ -57,7 +57,7 @@ public:
     {
         To = T;
     }
-    void SetIt(unsigned int I)
+    void SetIt(uint32 I)
     {
         It = I;
     }
