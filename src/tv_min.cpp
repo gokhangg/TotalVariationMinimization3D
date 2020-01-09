@@ -86,4 +86,6 @@ int main(int argc, char * argv[])
         std::cerr << "Invalid output image" << std::endl;
         return EXIT_FAILURE;
     }
+
+	return 0;
 }
