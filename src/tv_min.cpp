@@ -16,15 +16,15 @@
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 
-#include "./Parser/ArgumentParser.hpp"
-#include "tv.h"
+#include "../CommandlineParser/ArgumentParser.hpp"
+#include "tv_filter.h"
 
 using namespace std;
 
 int main(int argc, char * argv[])
 {
     float lambda = 0;
-    unsigned int It = 20;
+    unsigned int it = 20;
     bool verbose = false;
     cparser parser(argc, argv);
     parser.save_keys("in_file", "-in");
@@ -32,8 +32,8 @@ int main(int argc, char * argv[])
     parser.save_keys("lambda", "-l");
     parser.save_keys("iter", "-it");
     parser.save_keys("verbose", "-v");
-    parser.save_keys("slicebyslice", "-slc");
     parser.save_keys("IsIsotropic", "-iso");
+	parser.save_keys("SliceBySLice", "-slc");
     cout << "In File:" << parser["in_file"] << "\n";
     cout << "In File:" << parser["out_file"] << "\n";
     try
@@ -46,11 +46,11 @@ int main(int argc, char * argv[])
     }
     try
     {
-        It = stof(parser["iter"]);
+        it = stof(parser["iter"]);
     } 
     catch (const std::invalid_argument& ia)
     {
-        std::cout << "Invalid iteration value 10 is assigned instead\n";
+        std::cout << "Invalid iteration value 20 is assigned instead\n";
     }
 
     typedef itk::Image<float, 3> InputImageType;
@@ -63,15 +63,15 @@ int main(int argc, char * argv[])
 
     TV::Pointer Tv = TV::New();
     Tv->SetInput(reader->GetOutput());
-    if (parser["slicebyslice"] == "false")
-    {
-        Tv->SlcBySlc(false);
-    }
     if (parser["IsIsotropic"] == "true")
     {
-        Tv->Isotropic(true);
+        Tv->SetIsotropic(true);
     }
-    Tv->SetIt(It);
+	if (parser["SliceBySlice"] == "true")
+	{
+		Tv->SetSliceBySlice(true);
+	}
+    Tv->SetIt(it);
     Tv->SetLambda(lambda);
 
     typedef itk::ImageFileWriter<InputImageType> WriterType;
