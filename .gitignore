@@ -1,9 +1,7 @@
 
 
 /*
+!CMakeLists.txt
 !/src
-!/Datasets
 !/binaries
-!/CommandlineParser
 !/Test
-/Test/*/

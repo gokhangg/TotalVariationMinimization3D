@@ -16,7 +16,7 @@
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 
-#include "../CommandlineParser/ArgumentParser.hpp"
+#include "ArgumentParser.hpp"
 #include "tv_filter.h"
 
 using namespace std;
