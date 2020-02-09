@@ -1,11 +1,28 @@
-cmake_minimum_required(VERSION 2.8)
-project(tv_min_test)
+cmake_minimum_required(VERSION 3.0)
+project(TV_IMAGE_TEST)
 
+include(ExternalProject)
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+set(BUILD_SHARED ON CACHE BOOL "" FORCE)
+set(BUILD_GMOCK OFF CACHE BOOL "" FORCE)
 
-add_subdirectory(googletest/googletest)
+set(EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/gtestExternal)
 
-add_executable(tv_min_test tv_min_test.cpp )
+ExternalProject_Add(googletest
+    GIT_REPOSITORY https://github.com/google/googletest
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
+)
 
-target_link_libraries(tv_min_test 
-						PRIVATE gtest)
+include_directories(${EXTERNAL_INSTALL_LOCATION}/include)
+link_directories(${EXTERNAL_INSTALL_LOCATION}/lib)
+
+if (MSVC)
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+endif()
+
+add_executable(TV_IMAGE_TEST tv_image_test.cpp)
+
+add_dependencies(TV_IMAGE_TEST googletest)
+target_link_libraries(TV_IMAGE_TEST debug gtestd)
+target_link_libraries(TV_IMAGE_TEST optimized gtest)

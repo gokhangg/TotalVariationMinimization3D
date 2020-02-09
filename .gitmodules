@@ -1,9 +1,0 @@
-[submodule "Datasets"]
-	path = Datasets
-	url = https://github.com/gokhangg/Datasets.git
-[submodule "CommandlineParser"]
-	path = CommandlineParser
-	url = https://github.com/gokhangg/CommandlineParser.git
-[submodule "Test/googletest"]
-	path = Test/googletest
-	url = https://github.com/google/googletest.git
