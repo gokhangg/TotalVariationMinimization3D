@@ -13,7 +13,7 @@ ExternalProject_Add(googletest
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
 )
 
-include_directories(${EXTERNAL_INSTALL_LOCATION}/include)
+include_directories(${EXTERNAL_INSTALL_LOCATION}/include ${CMAKE_SOURCE_DIR}/src/TV_Image)
 link_directories(${EXTERNAL_INSTALL_LOCATION}/lib)
 
 if (MSVC)

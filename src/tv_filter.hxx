@@ -38,10 +38,14 @@ void TotalVariationMinimization<TInputImage, TOutputImage>::GenerateData()
     
 
 	/*Is image to be processed isotropically?*/
-    if (!m_isotropic)
+	if (!m_isotropic)
+	{
 		run<true>();
+	}
 	else
+	{
 		run<false>();
+	}
     /**Update and get result*/
 }
 
@@ -111,21 +115,24 @@ void TotalVariationMinimization<TInputImage, TOutputImage>::run()
 
 template<typename TInputImage, typename TOutputImage>
 template<typename T>
-void TotalVariationMinimization<TInputImage, TOutputImage>::engine(T& in, T& out) const 
+void TotalVariationMinimization<TInputImage, TOutputImage>::engine(T& in, T& out) 
 {
 	const float lambda = EPSILON + m_lm;
 	const float to = EPSILON + m_to;
-	auto vP = in.getGradient();
+	
 	out = in / lambda;
+	auto vP = in.getGradient();
+	auto midP = TVimage<>::getDivergence(vP) - out;
+	auto psi = midP.getGradient();
+	auto r = (psi[0] * psi[0]);
 
 	const auto dm = std::size(vP);
-	const auto nIt = m_it;
+	const auto nIt = m_it - 1;
 	for (auto it = 0u; it < nIt; it++)
 	{
-		auto midP = in.getDivergence(vP) - out;
-		auto psi = midP.getGradient();
-		auto r = (psi[0] * psi[0]);
-		for (auto ind = 1u; ind < dm; ++ind)
+		midP = TVimage<>::getDivergence(vP) - out;
+		psi = midP.getGradient();
+		for (auto ind = 0u; ind < dm; ++ind)
 			r += (psi[ind] * psi[ind]);
 		r.transform(std::sqrtf);
 		r = (r * to) + 1;

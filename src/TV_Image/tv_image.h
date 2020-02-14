@@ -14,6 +14,12 @@ template<bool IsIsotropic = true>
 class TVimage
 {
 public:
+	enum class DiffDir
+	{
+		FORWARD,
+		BACKWARD
+	};
+
 	using ThisType = typename TVimage<IsIsotropic>;
 	explicit TVimage()
 	: m_stride{std::vector<size_t>(1,1)}
@@ -118,7 +124,7 @@ public:
 	@param: forward Determines either forward or backward differentiation.
 	@return: Derived image.
 	*/
-	auto getDerivative(const unsigned int axis, const bool forward) const -> ThisType
+	auto getDerivative(const unsigned int axis, const DiffDir diffDir) const -> ThisType
 	{
 		ThisType out;
 		if (axis >= m_dim)
@@ -126,13 +132,13 @@ public:
 		out = *this;
 		const unsigned int strd = m_stride[axis];
 		const auto pBegin = std::data(m_cont);
-		const auto pOut = std::data(out) + (forward?0:strd);
+		const auto pOut = std::data(out) + (DiffDir::FORWARD == diffDir ? 0:strd);
 		const auto fullSize = m_stride[m_dim];
 		const auto scl = m_scale[axis];
 		getDiff<IsIsotropic>(pBegin, fullSize, strd, pOut, scl);
 
 		const unsigned int upStrd = m_stride[axis + 1];
-		auto ploc = std::data(out) + (forward?(upStrd - strd):0);
+		auto ploc = std::data(out) + (DiffDir::FORWARD == diffDir ? (upStrd - strd):0);
 		const auto end_ = std::data(out) + fullSize;
 		for (; ploc < end_;)
 		{
@@ -154,7 +160,7 @@ public:
 		const auto dim = m_dim;
 		for (auto ind = 0u; ind < dim; ++ind)
 		{
-			out[ind] = getDerivative(ind, true);
+			out[ind] = getDerivative(ind, ThisType::DiffDir::FORWARD);
 		}
 		return out;
 	}
@@ -165,13 +171,14 @@ public:
 	@param: in Input vector image.
 	@return: Gradient of the vector image.
 	*/
-	static auto getDivergence(const std::vector<ThisType>& in) -> ThisType
+	template<typename T>
+	static T getDivergence(const std::vector<T>& in)
 	{
-		ThisType out = in[0].getDerivative(0, false);
+		auto out = in[0].getDerivative(0, T::DiffDir::BACKWARD);
 		const auto dim = std::size(in);
 		for (auto ind = 1u; ind < dim; ++ind)
 		{
-			out += in[ind].getDerivative(ind, false);
+			out += in[ind].getDerivative(ind, T::DiffDir::BACKWARD);
 		}
 		return out;
 	}
@@ -399,6 +406,12 @@ public:
 			return *this;
 		selfOperator(in, oper);
 		return *this;
+	}
+
+
+	float& operator[](const std::size_t in)
+	{
+		return m_cont[in];
 	}
 
 	auto getSize() const noexcept
