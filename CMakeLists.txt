@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 project(TV_MIN)
 
-set(ITK_DIR XXX)
+#set(ITK_DIR XXX)
 set(DATASET_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Dataset)
 set(TEST_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Test)
 set(PROJECT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)

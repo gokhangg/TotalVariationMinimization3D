@@ -40,7 +40,7 @@ int main(int argc, char * argv[])
     {
         lambda = stof(parser["lambda"]);
     } 
-    catch (const std::invalid_argument& ia)
+    catch (...)
     {
         std::cout << "Invalid lambda value 0 is assigned instead\n";
     }
@@ -48,7 +48,7 @@ int main(int argc, char * argv[])
     {
         it = stof(parser["iter"]);
     } 
-    catch (const std::invalid_argument& ia)
+    catch (...)
     {
         std::cout << "Invalid iteration value 20 is assigned instead\n";
     }
@@ -81,7 +81,7 @@ int main(int argc, char * argv[])
     try
     {
         writer->Update();
-    } catch (itk::ExceptionObject & err)
+    } catch (...)
     {
         std::cerr << "Invalid output image" << std::endl;
         return EXIT_FAILURE;
