@@ -14,15 +14,21 @@ template<bool IsIsotropic = true>
 class TVimage
 {
 public:
-	using ThisType = typename TVimage<IsIsotropic>;
+	enum class DiffDir
+	{
+		FORWARD,
+		BACKWARD
+	};
+
+	using ThisType = TVimage<IsIsotropic>;
 	explicit TVimage()
-	: m_stride{std::vector<size_t>(1,1)}
-	, m_dim{1}
+		: m_stride{ std::vector<size_t>(1,1) }
+		, m_dim{ 1 }
 	{
 	}
-    
+
 	explicit TVimage(const std::vector<size_t> size__, const float initialVal = 0.f)
-	: TVimage()
+		: TVimage()
 	{
 		setSize(size__);
 		allocateMem(initialVal);
@@ -30,12 +36,12 @@ public:
 
 	template<typename... Args>
 	explicit TVimage(const Args... T)
-	: TVimage()
+		: TVimage()
 	{
 		setSize(T...);
 		allocateMem();
 	}
-    
+
 	/*
 	@brief: Function to determine size of the image to be created.
 	@param: size_ A vector containing size of the image.
@@ -49,7 +55,7 @@ public:
 		m_scale.resize(m_dim, 1.f);
 		fillStride();
 	}
-    
+
 	/*
 	@brief: Variadic template function to determine size of the image to be created.
 	@param: args Arguments of the image size.
@@ -78,7 +84,7 @@ public:
 			m_stride.emplace_back(st);
 		}
 	}
-    
+
 	void allocateMem(const float initialVal = 0.f)
 	{
 		const unsigned int sz_ = getStride()[m_dim];
@@ -86,28 +92,24 @@ public:
 	}
 
 	/*
-	@brief: Used to get differentiation of data.
-	@param: inP Pointer to the data container. The container must be 1d vector-like.
-	@param: size Size of the data container.
-	@param: stride Stride of the data to be processed. determines start and end points.
-	@param: pOunt Pointer to where the result will be written.
-	@param: sc Scaling factor for the differentiation.
-	@return:
-	*/
-	template<bool IsIso = true>
-	void getDiff(const float* inP, const int size, const int stride, float* pOut, const float) const
+		@brief: Used to get differentiation of data.
+		@param: inP Pointer to the data container. The container must be 1d vector-like.
+		@param: size Size of the data container.
+		@param: stride Stride of the data to be processed. determines start and end points.
+		@param: pOunt Pointer to where the result will be written.
+		@param: sc Scaling factor for the differentiation.
+		@return:
+		*/
+	void getDiff(const float* inP, const int size, const int stride, float* pOut, const float sc) const
 	{
 		auto p2 = inP + stride;
 		auto const pEnd = inP + size - stride;
-		for (; inP < pEnd;)
-			*pOut++ = *p2++ - *inP++;
-	}
-
-	template<>
-	void getDiff<false>(const float* inP, const int size, const int stride, float* pOut, const float sc) const
-	{
-		auto p2 = inP + stride;
-		auto const pEnd = inP + size - stride;
+		if (IsIsotropic)
+		{
+			for (; inP < pEnd;)
+				*pOut++ = *p2++ - *inP++;
+			return;
+		}
 		for (; inP < pEnd;)
 			*pOut++ = sc * (*p2++ - *inP++);
 	}
@@ -118,7 +120,7 @@ public:
 	@param: forward Determines either forward or backward differentiation.
 	@return: Derived image.
 	*/
-	auto getDerivative(const unsigned int axis, const bool forward) const -> ThisType
+	auto getDerivative(const unsigned int axis, const DiffDir diffDir) const -> ThisType
 	{
 		ThisType out;
 		if (axis >= m_dim)
@@ -126,13 +128,13 @@ public:
 		out = *this;
 		const unsigned int strd = m_stride[axis];
 		const auto pBegin = std::data(m_cont);
-		const auto pOut = std::data(out) + (forward?0:strd);
+		const auto pOut = std::data(out) + (DiffDir::FORWARD == diffDir ? 0 : strd);
 		const auto fullSize = m_stride[m_dim];
 		const auto scl = m_scale[axis];
-		getDiff<IsIsotropic>(pBegin, fullSize, strd, pOut, scl);
+		getDiff(pBegin, fullSize, strd, pOut, scl);
 
 		const unsigned int upStrd = m_stride[axis + 1];
-		auto ploc = std::data(out) + (forward?(upStrd - strd):0);
+		auto ploc = std::data(out) + (DiffDir::FORWARD == diffDir ? (upStrd - strd) : 0);
 		const auto end_ = std::data(out) + fullSize;
 		for (; ploc < end_;)
 		{
@@ -154,7 +156,7 @@ public:
 		const auto dim = m_dim;
 		for (auto ind = 0u; ind < dim; ++ind)
 		{
-			out[ind] = getDerivative(ind, true);
+			out[ind] = getDerivative(ind, ThisType::DiffDir::FORWARD);
 		}
 		return out;
 	}
@@ -165,13 +167,14 @@ public:
 	@param: in Input vector image.
 	@return: Gradient of the vector image.
 	*/
-	static auto getDivergence(const std::vector<ThisType>& in) -> ThisType
+	template<typename T>
+	static T getDivergence(const std::vector<T>& in)
 	{
-		ThisType out = in[0].getDerivative(0, false);
+		auto out = in[0].getDerivative(0, T::DiffDir::BACKWARD);
 		const auto dim = std::size(in);
 		for (auto ind = 1u; ind < dim; ++ind)
 		{
-			out += in[ind].getDerivative(ind, false);
+			out += in[ind].getDerivative(ind, T::DiffDir::BACKWARD);
 		}
 		return out;
 	}
@@ -205,7 +208,7 @@ public:
 	@return: A new image obtained.
 	*/
 	template<typename T, typename OperationT>
-	ThisType  subOperatorWithBasicVars(const T in, OperationT operation) const 
+	ThisType  subOperatorWithBasicVars(const T in, OperationT operation) const
 	{
 		ThisType out = *this;
 		const unsigned int strd = std::size(out);
@@ -332,7 +335,7 @@ public:
 		auto ptrIn = std::data(m_cont);
 		const auto endPtr = ptrIn + strd;
 		for (; ptrIn < endPtr;)
-				*ptrIn++ = var;
+			*ptrIn++ = var;
 	}
 
 	template<typename OperationT>
@@ -401,6 +404,12 @@ public:
 		return *this;
 	}
 
+
+	float& operator[](const std::size_t in)
+	{
+		return m_cont[in];
+	}
+
 	auto getSize() const noexcept
 	{
 		return m_size;
@@ -464,7 +473,7 @@ private:
 		fillIndex(ptr, dim);
 		fillIndex(ptr, args...);
 	}
-    
+
 	std::vector<float> m_cont;
 	std::vector<size_t> m_size;
 	std::vector<size_t> m_stride;
@@ -496,7 +505,7 @@ template<bool Iso>
 static TVimage<Iso> operator/(const float l, TVimage<Iso>& r)
 {
 	TVimage<Iso> out(r.getSize, l);
-	out /= r
+	out /= r;
 	return out;
 }
 

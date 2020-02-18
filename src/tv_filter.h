@@ -110,14 +110,14 @@ private:
 	@return:
 	*/
 	template<typename T>
-	void engine(T& in, T& out) const;
+	void engine(T& in, T& out);
 
 	/*
 	@brief: Computes scaling of the image dimensions.
 	@param: in Pixel size vector.
 	@return: Scaling vector.
 	*/
-	vector<float> computeScaling(const vector<float> in) const;
+	std::vector<float> computeScaling(const std::vector<float> in) const;
 };
 
 }
