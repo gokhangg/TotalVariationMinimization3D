@@ -83,5 +83,5 @@ int main(int argc, char * argv[])
 		std::cout << "No output file set!!" << std::endl;
 	}
 
-	return 0;
+  return 0;
 }
