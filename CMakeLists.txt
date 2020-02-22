@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.0)
 project(TV_MIN)
 
+set(CMAKE_CXX_STANDARD 17)
+
 #set(ITK_DIR XXX)
 set(DATASET_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Dataset)
 set(TEST_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Test)
@@ -15,8 +17,12 @@ if (BUILD_TEST)
 	add_subdirectory(${TEST_DIR})
 endif()
 
+
+
 if (DOWNLOAD_TEST_DATA)
 	if (NOT EXISTS ${DATASET_DIR})
 		execute_process(COMMAND git clone https://github.com/gokhangg/Datasets.git ${DATASET_DIR})
 	endif()
 endif()
+
+

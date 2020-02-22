@@ -9,6 +9,7 @@
 #define __TV_IMAGE__
 
 #include <vector>
+#include <iterator>
 
 template<bool IsIsotropic = true>
 class TVimage
@@ -66,7 +67,7 @@ public:
 	{
 		m_dim = sizeof...(args);
 		std::vector<size_t> size(m_dim);
-		fillIndex(std::data(size), args...);
+                fillIndex(std::data(size), m_dim, args...);
 		setSize(size);
 	}
 
@@ -104,14 +105,17 @@ public:
 	{
 		auto p2 = inP + stride;
 		auto const pEnd = inP + size - stride;
-		if (IsIsotropic)
+		if constexpr (IsIsotropic)
 		{
 			for (; inP < pEnd;)
 				*pOut++ = *p2++ - *inP++;
 			return;
 		}
-		for (; inP < pEnd;)
-			*pOut++ = sc * (*p2++ - *inP++);
+		else
+		{
+			for (; inP < pEnd;)
+				*pOut++ = sc * (*p2++ - *inP++);
+		}
 	}
 
 	/*
@@ -462,16 +466,16 @@ public:
 
 private:
 	template<typename T, typename std::enable_if_t<std::is_integral<T>::value, int> = 0>
-	void fillIndex(size_t*& ptr, const T dim)
+        void fillIndex(size_t*& ptr, const T dim)
 	{
 		*ptr++ = static_cast<size_t>(dim);
 	}
 
 	template<typename T, typename... ArgT>
-	void fillIndex(size_t* ptr, const T dim, const ArgT... args)
+        void fillIndex(size_t* ptr, const T dim, const ArgT... args)
 	{
 		fillIndex(ptr, dim);
-		fillIndex(ptr, args...);
+                fillIndex(ptr, dim, args...);
 	}
 
 	std::vector<float> m_cont;

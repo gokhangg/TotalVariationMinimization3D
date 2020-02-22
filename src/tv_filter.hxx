@@ -13,6 +13,7 @@
  */
 
 #include "tv_filter.h"
+#include <cmath>
 
 #ifndef tv_hxx
 #define tv_hxx
@@ -134,7 +135,7 @@ void TotalVariationMinimization<TInputImage, TOutputImage>::engine(T& in, T& out
 		psi = midP.getGradient();
 		for (auto ind = 0u; ind < dm; ++ind)
 			r += (psi[ind] * psi[ind]);
-		r.transform(std::sqrtf);
+                r.transform(sqrtf);
 		r = (r * to) + 1;
 		for (auto ind = 0u; ind < dm; ++ind)
 		{
