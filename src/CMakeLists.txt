@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.0)
 project(TV_MIN_FILTER)
 
+set(CMAKE_CXX_STANDARD 17)
+
 find_package(ITK REQUIRED)
 include(${ITK_USE_FILE})
 
@@ -11,6 +13,8 @@ set(COMMANDPARSER_DIR ${CMAKE_BINARY_DIR}/CommandlineParser)
 if (NOT EXISTS ${COMMANDPARSER_DIR})
 	execute_process(COMMAND git clone https://github.com/gokhangg/CommandlineParser.git ${COMMANDPARSER_DIR})
 endif()
+
+
 
 include_directories(${TVIMAGE_DIR} ${COMMANDPARSER_DIR}/src)
 set(HEADER_FILES tv_filter.h tv_filter.hxx ${TVIMAGE_DIR}/tv_image.h)

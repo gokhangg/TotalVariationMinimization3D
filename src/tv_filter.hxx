@@ -1,8 +1,8 @@
 /*
  * temp.cpp
  *
- *  Created on: 2018 M12 29
- *      Author: gogo
+ *Created on: 2018 M12 29
+ *Author: gogo
  */
 
 /*
@@ -13,6 +13,7 @@
  */
 
 #include "tv_filter.h"
+#include <cmath>
 
 #ifndef tv_hxx
 #define tv_hxx
@@ -35,8 +36,6 @@ namespace itk
 template<typename TInputImage, typename TOutputImage>
 void TotalVariationMinimization<TInputImage, TOutputImage>::GenerateData()
 {
-    
-
 	/*Is image to be processed isotropically?*/
 	if (!m_isotropic)
 	{
@@ -46,7 +45,7 @@ void TotalVariationMinimization<TInputImage, TOutputImage>::GenerateData()
 	{
 		run<false>();
 	}
-    /**Update and get result*/
+	/**Update and get result*/
 }
 
 template<typename TInputImage, typename TOutputImage>
@@ -55,11 +54,15 @@ auto TotalVariationMinimization<TInputImage, TOutputImage>::computeScaling(const
 	float r = 0.f;
 	const int dim_ = std::size(spacing);
 	std::vector<float> scaling(dim_);
-    for (int i = 0; i < dim_; i++)
+	for (int i = 0; i < dim_; i++)
+	{
 		r += 1 / ((spacing[i] + EPSILON) * (spacing[i] + EPSILON));
-    r = sqrt(static_cast<float>(dim_) / r);
-    for (int i = 0; i < dim_; i++)
+	}
+	r = sqrt(static_cast<float>(dim_) / r);
+	for (int i = 0; i < dim_; i++)
+	{	
 		scaling[i] = r / (spacing[i] + EPSILON);
+	}
 	return scaling;
 }
 
@@ -133,8 +136,10 @@ void TotalVariationMinimization<TInputImage, TOutputImage>::engine(T& in, T& out
 		midP = TVimage<>::getDivergence(vP) - out;
 		psi = midP.getGradient();
 		for (auto ind = 0u; ind < dm; ++ind)
+		{
 			r += (psi[ind] * psi[ind]);
-		r.transform(std::sqrtf);
+		}
+		r.transform(sqrtf);
 		r = (r * to) + 1;
 		for (auto ind = 0u; ind < dm; ++ind)
 		{
@@ -154,11 +159,11 @@ void TotalVariationMinimization<TInputImage, TOutputImage>::engine(T& in, T& out
 template<typename TInputImage, typename TOutputImage>
 void TotalVariationMinimization<TInputImage, TOutputImage>::PrintSelf(std::ostream & os, Indent indent) const
 {
-    Superclass::PrintSelf(os, indent);
-    os << indent << "Lambda: " << m_lm << std::endl;
-    os << indent << "Iteration Num: " << m_it << std::endl;
-    os << indent << "To: " << m_it << std::endl;
-    os << indent << "Iteration Num: " << m_it << std::endl;
+	Superclass::PrintSelf(os, indent);
+	os << indent << "Lambda: " << m_lm << std::endl;
+	os << indent << "Iteration Num: " << m_it << std::endl;
+	os << indent << "To: " << m_it << std::endl;
+	os << indent << "Iteration Num: " << m_it << std::endl;
 }
 template<typename TInputImage, typename TOutputImage>
 TotalVariationMinimization<TInputImage, TOutputImage>::~TotalVariationMinimization()

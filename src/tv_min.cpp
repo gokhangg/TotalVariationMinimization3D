@@ -31,7 +31,7 @@ int main(int argc, char * argv[])
 	parser.save_key("verbose", "-v");
 	parser.save_key("IsIsotropic", "-iso");
 	parser.save_key("SliceBySlice", "-slc");
-   
+
 	typedef itk::Image<float, 3> InputImageType;
 	typedef itk::ImageFileReader<InputImageType> ReaderType;
 	ReaderType::Pointer reader = ReaderType::New();
@@ -83,5 +83,5 @@ int main(int argc, char * argv[])
 		std::cout << "No output file set!!" << std::endl;
 	}
 
-  return 0;
+	return 0;
 }

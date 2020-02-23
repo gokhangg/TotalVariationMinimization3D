@@ -25,12 +25,12 @@ template<typename TInputImage, typename TOutputImage>
 class TotalVariationMinimization: public ImageToImageFilter<TInputImage,TOutputImage>
 {
 public:
-    using Superclass = ImageToImageFilter< TInputImage, TOutputImage >;
-    using Self = TotalVariationMinimization;
-    using Pointer = SmartPointer< Self >;
-    using ConstPointer = SmartPointer< const Self >;
-    
-    itkNewMacro (Self);
+	using Superclass = ImageToImageFilter< TInputImage, TOutputImage >;
+	using Self = TotalVariationMinimization;
+	using Pointer = SmartPointer< Self >;
+	using ConstPointer = SmartPointer< const Self >;
+
+	itkNewMacro (Self);
 	itkTypeMacro(DiscreteGaussianImageFilter, ImageToImageFilter);
 
 	/*
@@ -38,40 +38,40 @@ public:
 	@param: to To value.
 	@return:
 	*/
-    void SetTo(const float to) noexcept
-    {
-        m_to = to;
-    }
+	void SetTo(const float to) noexcept
+	{
+		m_to = to;
+	}
 
 	/*
 	@brief: Sets iteration number.
 	@param: it Iteration number in the optimization.
 	@return:
 	*/
-    void SetIt(const unsigned int i) noexcept
-    {
-        m_it = i;
-    }
+	void SetIt(const unsigned int i) noexcept
+	{
+		m_it = i;
+	}
 
 	/*
 	@brief: Sets "lambda" weight in the algorithm.
 	@param: lam Lambda value.
 	@return:
 	*/
-    void SetLambda(const float lam) noexcept
-    {
-        m_lm = lam;
-    }
+	void SetLambda(const float lam) noexcept
+	{
+		m_lm = lam;
+	}
 
 	/*
 	@brief: Sets if the algorithm will be applied in the isotropic way or not.
 	@param: iso Isotropic value.
 	@return:
 	*/
-    void SetIsotropic(const bool iso) noexcept
-    {
-        m_isotropic = iso;
-    }
+	void SetIsotropic(const bool iso) noexcept
+	{
+		m_isotropic = iso;
+	}
 
 	/*
 	@brief: Sets if the algorithm will be applied to the image slice by slice.
@@ -83,15 +83,15 @@ public:
 		m_sliceBySlice = slc;
 	}
 
-    void PrintSelf(std::ostream & os, Indent indent) const override;
+	void PrintSelf(std::ostream & os, Indent indent) const override;
 
 protected:
-    TotalVariationMinimization()
-    {
-    }
+	TotalVariationMinimization()
+	{
+	}
 
-    ~TotalVariationMinimization();
-    void GenerateData() override;
+	~TotalVariationMinimization();
+	void GenerateData() override;
 
 private:
 	unsigned int m_it = 10;
