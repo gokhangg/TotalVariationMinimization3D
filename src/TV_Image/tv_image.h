@@ -43,6 +43,85 @@ public:
 		allocateMem();
 	}
 
+	float& operator[](const std::size_t in)
+	{
+		return m_cont[in];
+	}
+
+	auto getSize() const noexcept
+	{
+		return m_size;
+	}
+
+	auto getDim() const noexcept
+	{
+		return m_dim;
+	}
+
+	auto getStride() const noexcept
+	{
+		return m_stride;
+	}
+
+	auto begin()
+	{
+		return std::begin(m_cont);
+	}
+
+	auto end()
+	{
+		return std::end(m_cont);
+	}
+
+	auto begin() const
+	{
+		return std::begin(m_cont);
+	}
+
+	auto end() const
+	{
+		return std::end(m_cont);
+	}
+
+	auto data()
+	{
+		return std::data(m_cont);
+	}
+
+	auto data() const
+	{
+		return std::data(m_cont);
+	}
+
+	auto size() const  noexcept
+	{
+		return std::size(m_cont);
+	}
+
+	/*
+	@brief: Applies provided operation onto the image.
+	@param: operation Operation to be applied.
+	@return:
+	*/
+	template<typename OperationT>
+	void transform(const OperationT operation)
+	{
+		auto ptr = std::data(m_cont);
+		const auto endPtr = ptr + std::size(m_cont);
+		for (; ptr < endPtr; )
+			*ptr++ = operation(*ptr);
+	}
+
+	/*
+	@brief: Sets scaling of the image dimensions.
+	@param: scale Scale vector.
+	@return:
+	*/
+	void setScaling(const std::vector<float> scale)
+	{
+		m_scale = scale;
+	}
+
 	/*
 	@brief: Function to determine size of the image to be created.
 	@param: size_ A vector containing size of the image.
@@ -69,21 +148,6 @@ public:
 		std::vector<size_t> size(m_dim);
 		fillIndex(std::data(size), m_dim, args...);
 		setSize(size);
-	}
-
-	/*
-	@brief: Used to fill member stride vector.
-	@param:
-	@return:
-	*/
-	void fillStride()
-	{
-		size_t st = 1;
-		for (auto item : m_size)
-		{
-			st *= item;
-			m_stride.emplace_back(st);
-		}
 	}
 
 	void allocateMem(const float initialVal = 0.f)
@@ -221,30 +285,6 @@ public:
 		const auto endPtr = ptrIn + strd;
 		operation(ptrIn, var, endPtr);
 		return out;
-	}
-
-	/*
-	@brief: Applies provided operation onto the image.
-	@param: operation Operation to be applied.
-	@return:
-	*/
-	template<typename OperationT>
-	void transform(const OperationT operation)
-	{
-		auto ptr = std::data(m_cont);
-		const auto endPtr = ptr + std::size(m_cont);
-		for (; ptr < endPtr; )
-			*ptr++ = operation(*ptr);
-	}
-
-	/*
-	@brief: Sets scaling of the image dimensions.
-	@param: scale Scale vector.
-	@return:
-	*/
-	void setScaling(const std::vector<float> scale)
-	{
-		m_scale = scale;
 	}
 
 	ThisType operator+(const ThisType& inIm)
@@ -408,63 +448,22 @@ public:
 		return *this;
 	}
 
-
-	float& operator[](const std::size_t in)
-	{
-		return m_cont[in];
-	}
-
-	auto getSize() const noexcept
-	{
-		return m_size;
-	}
-
-	auto getDim() const noexcept
-	{
-		return m_dim;
-	}
-
-	auto getStride() const noexcept
-	{
-		return m_stride;
-	}
-
-	auto begin()
-	{
-		return std::begin(m_cont);
-	}
-
-	auto end()
-	{
-		return std::end(m_cont);
-	}
-
-	auto begin() const
-	{
-		return std::begin(m_cont);
-	}
-
-	auto end() const
-	{
-		return std::end(m_cont);
-	}
-
-	auto data()
-	{
-		return std::data(m_cont);
-	}
-
-	auto data() const
-	{
-		return std::data(m_cont);
-	}
-
-	auto size() const
-	{
-		return std::size(m_cont);
-	}
-
 private:
+	/*
+	@brief: Used to fill member stride vector.
+	@param:
+	@return:
+	*/
+	void fillStride()
+	{
+		size_t st = 1;
+		for (auto item : m_size)
+		{
+			st *= item;
+			m_stride.emplace_back(st);
+		}
+	}
+
 	template<typename T, typename std::enable_if_t<std::is_integral<T>::value, int> = 0>
 	void fillIndex(size_t*& ptr, const T dim)
 	{
